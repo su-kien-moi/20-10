@@ -5,250 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>📊 Thống kê thiệp 20/10</title>
 <style>
-  :root{
-    --pink:#ff3d9a;
-    --purple:#a855f7;
-    --gold:#ffd700;
-    --cyan:#22d3ee;
-    --green:#34d399;
-    --red:#f87171;
-    --bg-0:#08010f;
-    --bg-1:#1a0429;
-    --ink:#fff;
-    --muted:rgba(255,255,255,.55);
-  }
+  :root{ --pink:#ff3d9a; --purple:#a855f7; --gold:#ffd700; --green:#34d399; --red:#f87171; --ink:#fff; --muted:rgba(255,255,255,.55); }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    min-height:100vh;
-    padding:clamp(16px,3vw,32px);
-    background:
-      radial-gradient(1000px 600px at 15% 5%, rgba(255,61,154,.25), transparent 60%),
-      radial-gradient(900px 600px at 85% 95%, rgba(168,85,247,.25), transparent 60%),
-      linear-gradient(160deg,#08010f 0%,#1a0429 50%,#2d0a40 100%);
-    color:var(--ink);
-    overflow-x:hidden;
-  }
-
-  /* ==== HEADER ==== */
-  .topbar{
-    display:flex;justify-content:space-between;align-items:center;
-    flex-wrap:wrap;gap:14px;margin-bottom:28px;
-  }
-  .topbar h1{
-    font-size:clamp(22px,4vw,32px);font-weight:900;
-    background:linear-gradient(90deg,#fff,#ffd0e6,#ffd700,#ffd0e6,#fff);
-    background-size:300% auto;
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shimmer 4s linear infinite;
-    filter:drop-shadow(0 4px 20px rgba(255,61,154,.55));
-  }
-  @keyframes shimmer{
-    0%{background-position:0% center;}
-    100%{background-position:300% center;}
-  }
-  .actions{display:flex;gap:10px;flex-wrap:wrap;}
-  .btn-link, .actions button{
-    display:inline-flex;align-items:center;gap:6px;
-    padding:10px 18px;border-radius:999px;border:none;cursor:pointer;
-    font-family:inherit;font-size:13.5px;font-weight:800;
-    color:#fff;text-decoration:none;letter-spacing:.02em;
-    background:linear-gradient(135deg,var(--pink),var(--purple));
-    box-shadow:0 8px 24px rgba(255,61,154,.4),0 0 30px rgba(168,85,247,.2);
-    transition:transform .2s,box-shadow .3s,opacity .2s;
-    white-space:nowrap;
-  }
-  .btn-link:hover, .actions button:hover{
-    transform:translateY(-2px) scale(1.04);
-    box-shadow:0 14px 32px rgba(255,61,154,.65),0 0 50px rgba(168,85,247,.4);
-  }
-  .actions button.ghost{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.25);
-    box-shadow:none;
-  }
-  .actions button.ghost:hover{background:rgba(255,255,255,.15);}
-
-  /* ==== LIVE INDICATOR ==== */
-  .live{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:6px 14px;border-radius:999px;
-    background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.35);
-    font-size:12px;font-weight:700;color:var(--green);
-    margin-bottom:16px;
-  }
-  .live-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--green);
-    box-shadow:0 0 12px var(--green);
-    animation:pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{opacity:1;transform:scale(1);}
-    50%{opacity:.4;transform:scale(.7);}
-  }
-
-  /* ==== STAT CARDS ==== */
-  .summary{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:18px;margin-bottom:24px;
-  }
-  .stat-card{
-    position:relative;overflow:hidden;
-    background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:22px;padding:26px 22px;
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);
-    transition:transform .3s,box-shadow .3s;
-  }
-  .stat-card:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(255,61,154,.3),inset 0 1px 0 rgba(255,255,255,.3);}
-  .stat-card::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:linear-gradient(90deg,var(--pink),var(--purple),var(--gold));
-    box-shadow:0 0 20px rgba(255,61,154,.6);
-  }
-  .stat-card .icon{
-    position:absolute;top:16px;right:18px;
-    font-size:26px;opacity:.5;
-  }
-  .stat-card .num{
-    font-size:clamp(34px,6vw,52px);font-weight:900;
-    line-height:1;color:#fff;
-    text-shadow:0 0 20px currentColor;
-  }
-  .stat-card.c-pink .num{color:var(--pink);}
-  .stat-card.c-green .num{color:var(--green);}
-  .stat-card.c-gold .num{color:var(--gold);}
-  .stat-card .label{
-    margin-top:10px;font-size:13px;font-weight:700;
-    color:var(--muted);letter-spacing:.05em;text-transform:uppercase;
-  }
-
-  /* ==== PROGRESS RINGS ==== */
-  .rings{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;margin-bottom:26px;
-  }
-  .ring-card{
-    display:flex;align-items:center;gap:18px;
-    padding:20px 22px;border-radius:22px;
-    background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.18);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    box-shadow:0 16px 40px rgba(0,0,0,.4);
-  }
-  .ring-svg{width:80px;height:80px;flex:0 0 auto;transform:rotate(-90deg);}
-  .ring-bg{fill:none;stroke:rgba(255,255,255,.12);stroke-width:8;}
-  .ring-fill{
-    fill:none;stroke:url(#ringGrad);stroke-width:8;stroke-linecap:round;
-    transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.25,1);
-    filter:drop-shadow(0 0 8px var(--pink));
-  }
-  .ring-info h3{
-    font-size:14px;color:#fff;margin-bottom:4px;font-weight:800;
-  }
-  .ring-info p{
-    font-size:12.5px;color:var(--muted);line-height:1.5;
-  }
-
-  /* ==== TABLE ==== */
-  .table-wrap{
-    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
-    border-radius:22px;overflow:hidden;
-    border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 20px 60px rgba(0,0,0,.5);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    margin-bottom:20px;
-  }
-  table{width:100%;border-collapse:collapse;font-size:14px;min-width:820px;}
-  thead th{
-    text-align:left;padding:16px 18px;font-size:11.5px;
-    text-transform:uppercase;letter-spacing:.08em;
-    color:var(--muted);background:rgba(255,255,255,.04);
-    border-bottom:1px solid rgba(255,255,255,.12);
-    white-space:nowrap;font-weight:800;
-  }
-  tbody td{
-    padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.06);
-    vertical-align:middle;color:rgba(255,255,255,.9);
-  }
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr{transition:background .25s;}
-  tbody tr:hover{background:rgba(255,61,154,.08);}
-  tbody td b{color:var(--gold);text-shadow:0 0 12px rgba(255,215,0,.5);}
-  .row-num{color:var(--muted);font-weight:700;font-size:13px;}
-
-  .progress{display:flex;gap:6px;align-items:center;}
-  .progress .pdot{
-    width:12px;height:12px;border-radius:50%;
-    background:rgba(255,255,255,.15);
-    transition:background .3s,box-shadow .3s;
-  }
-  .progress .pdot.on{
-    background:var(--pink);
-    box-shadow:0 0 10px var(--pink),0 0 20px rgba(255,61,154,.5);
-  }
-
-  .badge{
-    display:inline-block;padding:5px 12px;border-radius:999px;
-    font-size:12px;font-weight:800;white-space:nowrap;letter-spacing:.02em;
-  }
-  .badge.done{
-    background:rgba(52,211,153,.18);color:var(--green);
-    border:1px solid rgba(52,211,153,.4);
-    box-shadow:0 0 16px rgba(52,211,153,.3);
-  }
-  .badge.pending{
-    background:rgba(255,215,0,.15);color:var(--gold);
-    border:1px solid rgba(255,215,0,.4);
-    box-shadow:0 0 16px rgba(255,215,0,.25);
-  }
-
-  /* ==== EMPTY ==== */
-  .empty{
-    display:none;text-align:center;padding:70px 20px;
-    border-radius:22px;
-    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01));
-    border:1px dashed rgba(255,255,255,.2);
-    color:var(--muted);font-size:15px;line-height:1.8;
-  }
-  .empty .icon{
-    font-size:64px;display:block;margin-bottom:16px;
-    filter:drop-shadow(0 0 20px var(--pink));
-    animation:pulse 2s ease-in-out infinite;
-  }
-  .empty b{color:var(--pink);}
-
-  /* ==== FOOTER ==== */
-  .footer{
-    margin-top:20px;text-align:center;
-    font-size:12px;color:var(--muted);line-height:1.8;
-  }
-  .footer code{
-    background:rgba(255,61,154,.15);padding:2px 7px;border-radius:6px;
-    color:var(--pink);font-size:11.5px;
-  }
-
-  /* ==== TOAST ==== */
-  .toast{
-    position:fixed;bottom:24px;left:50%;
-    transform:translateX(-50%) translateY(20px);
-    padding:11px 20px;border-radius:999px;
-    background:rgba(20,5,30,.95);
-    border:1px solid rgba(255,255,255,.3);
-    color:#fff;font-size:13px;font-weight:700;
-    opacity:0;transition:opacity .3s,transform .3s;
-    pointer-events:none;z-index:200;
-    backdrop-filter:blur(10px);
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .toast.ok{border-color:var(--green);box-shadow:0 0 24px rgba(52,211,153,.5);}
-  .toast.err{border-color:var(--red);box-shadow:0 0 24px rgba(248,113,113,.5);}
-
-  @media (max-width:480px){
-    .topbar h1{font-size:20px;}
-    .btn-link, .actions button{padding:9px 14px;font-size:12.5px;}
-  }
+  body{ font-family:'Segoe UI',system-ui,-apple-system,sans-serif; min-height:100vh; padding:clamp(16px,3vw,32px); background:radial-gradient(1000px 600px at 15% 5%, rgba(255,61,154,.25), transparent 60%), radial-gradient(900px 600px at 85% 95%, rgba(168,85,247,.25), transparent 60%), linear-gradient(160deg,#08010f 0%,#1a0429 50%,#2d0a40 100%); color:var(--ink); overflow-x:hidden; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:28px; }
+  .topbar h1{ font-size:clamp(22px,4vw,32px); font-weight:900; background:linear-gradient(90deg,#fff,#ffd0e6,#ffd700,#ffd0e6,#fff); background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 4s linear infinite; filter:drop-shadow(0 4px 20px rgba(255,61,154,.55)); }
+  @keyframes shimmer{ 0%{background-position:0% center;} 100%{background-position:300% center;} }
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-link, .actions button{ display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:800; color:#fff; text-decoration:none; letter-spacing:.02em; background:linear-gradient(135deg,var(--pink),var(--purple)); box-shadow:0 8px 24px rgba(255,61,154,.4),0 0 30px rgba(168,85,247,.2); transition:transform .2s,box-shadow .3s,opacity .2s; white-space:nowrap; }
+  .btn-link:hover, .actions button:hover{ transform:translateY(-2px) scale(1.04); box-shadow:0 14px 32px rgba(255,61,154,.65),0 0 50px rgba(168,85,247,.4); }
+  .actions button.ghost{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25); box-shadow:none; }
+  .actions button.ghost:hover{ background:rgba(255,255,255,.15); }
+  .live{ display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; background:rgba(52,211,153,.12); border:1px solid rgba(52,211,153,.35); font-size:12px; font-weight:700; color:var(--green); margin-bottom:16px; }
+  .live-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 12px var(--green); animation:pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.7);} }
+  .summary{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:18px; margin-bottom:24px; }
+  .stat-card{ position:relative; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.18); border-radius:22px; padding:26px 22px; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2); transition:transform .3s,box-shadow .3s; }
+  .stat-card:hover{ transform:translateY(-4px); box-shadow:0 26px 60px rgba(255,61,154,.3),inset 0 1px 0 rgba(255,255,255,.3); }
+  .stat-card::before{ content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--pink),var(--purple),var(--gold)); box-shadow:0 0 20px rgba(255,61,154,.6); }
+  .stat-card .icon{ position:absolute; top:16px; right:18px; font-size:26px; opacity:.5; }
+  .stat-card .num{ font-size:clamp(34px,6vw,52px); font-weight:900; line-height:1; color:#fff; text-shadow:0 0 20px currentColor; }
+  .stat-card.c-pink .num{ color:var(--pink); } .stat-card.c-green .num{ color:var(--green); } .stat-card.c-gold .num{ color:var(--gold); }
+  .stat-card .label{ margin-top:10px; font-size:13px; font-weight:700; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .rings{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-bottom:26px; }
+  .ring-card{ display:flex; align-items:center; gap:18px; padding:20px 22px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 16px 40px rgba(0,0,0,.4); }
+  .ring-svg{ width:80px; height:80px; flex:0 0 auto; transform:rotate(-90deg); }
+  .ring-bg{ fill:none; stroke:rgba(255,255,255,.12); stroke-width:8; }
+  .ring-fill{ fill:none; stroke:url(#ringGrad); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.25,1); filter:drop-shadow(0 0 8px var(--pink)); }
+  .ring-info h3{ font-size:14px; color:#fff; margin-bottom:4px; font-weight:800; }
+  .ring-info p{ font-size:12.5px; color:var(--muted); line-height:1.5; }
+  .table-wrap{ background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02)); border-radius:22px; overflow:hidden; border:1px solid rgba(255,255,255,.15); box-shadow:0 20px 60px rgba(0,0,0,.5); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); margin-bottom:20px; }
+  table{ width:100%; border-collapse:collapse; font-size:14px; min-width:820px; }
+  thead th{ text-align:left; padding:16px 18px; font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.12); white-space:nowrap; font-weight:800; }
+  tbody td{ padding:15px 18px; border-bottom:1px solid rgba(255,255,255,.06); vertical-align:middle; color:rgba(255,255,255,.9); }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr{ transition:background .25s; } tbody tr:hover{ background:rgba(255,61,154,.08); }
+  tbody td b{ color:var(--gold); text-shadow:0 0 12px rgba(255,215,0,.5); }
+  .row-num{ color:var(--muted); font-weight:700; font-size:13px; }
+  .progress{ display:flex; gap:6px; align-items:center; }
+  .progress .pdot{ width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.15); transition:background .3s,box-shadow .3s; }
+  .progress .pdot.on{ background:var(--pink); box-shadow:0 0 10px var(--pink),0 0 20px rgba(255,61,154,.5); }
+  .badge{ display:inline-block; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:800; white-space:nowrap; letter-spacing:.02em; }
+  .badge.done{ background:rgba(52,211,153,.18); color:var(--green); border:1px solid rgba(52,211,153,.4); box-shadow:0 0 16px rgba(52,211,153,.3); }
+  .badge.pending{ background:rgba(255,215,0,.15); color:var(--gold); border:1px solid rgba(255,215,0,.4); box-shadow:0 0 16px rgba(255,215,0,.25); }
+  .empty{ display:none; text-align:center; padding:70px 20px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01)); border:1px dashed rgba(255,255,255,.2); color:var(--muted); font-size:15px; line-height:1.8; }
+  .empty .icon{ font-size:64px; display:block; margin-bottom:16px; filter:drop-shadow(0 0 20px var(--pink)); animation:pulse 2s ease-in-out infinite; }
+  .empty b{ color:var(--pink); }
+  .footer{ margin-top:20px; text-align:center; font-size:12px; color:var(--muted); line-height:1.8; }
+  .footer code{ background:rgba(255,61,154,.15); padding:2px 7px; border-radius:6px; color:var(--pink); font-size:11.5px; }
+  .toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); padding:11px 20px; border-radius:999px; background:rgba(20,5,30,.95); border:1px solid rgba(255,255,255,.3); color:#fff; font-size:13px; font-weight:700; opacity:0; transition:opacity .3s,transform .3s; pointer-events:none; z-index:200; backdrop-filter:blur(10px); }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.ok{ border-color:var(--green); box-shadow:0 0 24px rgba(52,211,153,.5); } .toast.err{ border-color:var(--red); box-shadow:0 0 24px rgba(248,113,113,.5); }
+  @media (max-width:480px){ .topbar h1{font-size:20px;} .btn-link, .actions button{padding:9px 14px;font-size:12.5px;} }
 </style>
 </head>
 <body>
@@ -268,7 +76,6 @@
   <span id="liveLabel">Đang tải...</span>
 </div>
 
-<!-- SVG gradient definition for rings -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -279,62 +86,32 @@
 </svg>
 
 <section class="summary">
-  <div class="stat-card c-pink">
-    <span class="icon">👥</span>
-    <div class="num" id="totalVisitors">0</div>
-    <div class="label">Người truy cập</div>
-  </div>
-  <div class="stat-card c-green">
-    <span class="icon">✓</span>
-    <div class="num" id="totalCompleted">0</div>
-    <div class="label">Đã xem hết</div>
-  </div>
-  <div class="stat-card c-gold">
-    <span class="icon">%</span>
-    <div class="num" id="completionRate">0%</div>
-    <div class="label">Tỉ lệ hoàn thành</div>
-  </div>
+  <div class="stat-card c-pink"><span class="icon">👥</span><div class="num" id="totalVisitors">0</div><div class="label">Người truy cập</div></div>
+  <div class="stat-card c-green"><span class="icon">✓</span><div class="num" id="totalCompleted">0</div><div class="label">Đã xem hết</div></div>
+  <div class="stat-card c-gold"><span class="icon">%</span><div class="num" id="completionRate">0%</div><div class="label">Tỉ lệ hoàn thành</div></div>
 </section>
 
 <section class="rings">
   <div class="ring-card">
     <svg class="ring-svg" viewBox="0 0 100 100">
       <circle class="ring-bg" cx="50" cy="50" r="42"/>
-      <circle class="ring-fill" id="ring1" cx="50" cy="50" r="42"
-              stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      <circle class="ring-fill" id="ring1" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
     </svg>
-    <div class="ring-info">
-      <h3>Tỉ lệ hoàn thành</h3>
-      <p id="ring1Label">0% người xem đã đọc hết thiệp</p>
-    </div>
+    <div class="ring-info"><h3>Tỉ lệ hoàn thành</h3><p id="ring1Label">0% người xem đã đọc hết thiệp</p></div>
   </div>
   <div class="ring-card">
     <svg class="ring-svg" viewBox="0 0 100 100">
       <circle class="ring-bg" cx="50" cy="50" r="42"/>
-      <circle class="ring-fill" id="ring2" cx="50" cy="50" r="42"
-              stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      <circle class="ring-fill" id="ring2" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
     </svg>
-    <div class="ring-info">
-      <h3>Đã ghé thăm</h3>
-      <p id="ring2Label">0 người đã mở thiệp</p>
-    </div>
+    <div class="ring-info"><h3>Đã ghé thăm</h3><p id="ring2Label">0 người đã mở thiệp</p></div>
   </div>
 </section>
 
 <div class="table-wrap">
   <table>
     <thead>
-      <tr>
-        <th>#</th>
-        <th>Họ đệm</th>
-        <th>Tên</th>
-        <th>Ngày sinh</th>
-        <th>Lần đầu</th>
-        <th>Lần cuối</th>
-        <th>Lượt</th>
-        <th>Tiến độ</th>
-        <th>Trạng thái</th>
-      </tr>
+      <tr><th>#</th><th>Họ đệm</th><th>Tên</th><th>Ngày sinh</th><th>Lần đầu</th><th>Lần cuối</th><th>Lượt</th><th>Tiến độ</th><th>Trạng thái</th></tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -342,40 +119,39 @@
 
 <div class="empty" id="emptyState">
   <span class="icon">🌸</span>
-  Chưa có ai truy cập thiệp.<br>
-  Hãy mở <b>index.html</b> để bắt đầu nhé!
+  Chưa có ai truy cập thiệp.<br>Hãy mở <b>index.html</b> để bắt đầu nhé!
 </div>
 
 <div class="footer">
-  <span id="sourceLabel">Đang đọc từ localStorage</span> ·
-  Cập nhật lúc <span id="lastUpdate">—</span>
+  <span id="sourceLabel">Đang đọc từ localStorage</span> · Cập nhật lúc <span id="lastUpdate">—</span>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
+/* ============================================================
+   CẤU HÌNH GITHUB - DÁN TOKEN VÀO DÒNG DƯỚI ĐÂY (GIỐNG HỆT FILE index.html):
+   ============================================================ */
+window.GH_CONFIG = {
+  owner: 'Quang Long',   // Tên tài khoản GitHub
+  repo:  '20-10',         // Tên repo
+  branch:'main',
+  path:  'visits.json',
+  token: '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' // <-- Thay token vào đây
+};
+/* ============================================================ */
+
 (function(){
   'use strict';
 
-  /* ============================================================
-     CẤU HÌNH — PHẢI GIỐNG index.html
-     ============================================================ */
-  const GH = {
-    owner: 'HQL_2311',
-    repo:  'data',
-    branch:'main',
-    path:  'visits.json',
-    token: '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'
-  };
-  const USE_REMOTE = !!(GH.token && GH.owner !== 'YOUR_USERNAME');
+  const GH = window.GH_CONFIG;
+  const USE_REMOTE = !!(GH.token && GH.token !== 'DAN_TOKEN_GITHUB_PAT_VAO_DAY');
   const STORE_KEY = 'wish2010_visits_v1';
   const TOTAL_SLIDES = 3;
   const RING_LEN = 2 * Math.PI * 42;
 
-  /* ================= HELPERS ================= */
   function b64Decode(str){
-    const bin = atob(str.replace(/\s/g, ''));
-    const bytes = new Uint8Array(bin.length);
+    const bin = atob(str.replace(/\s/g, '')); const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return new TextDecoder().decode(bytes);
   }
@@ -383,8 +159,7 @@
   function fmtDate(ts){
     if (!ts) return '—';
     const d = new Date(ts);
-    return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear()
-         + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
   }
   function fmtDOB(s){
     if (!s) return '—';
@@ -392,38 +167,24 @@
     return p.length === 3 ? (p[2] + '/' + p[1] + '/' + p[0]) : s;
   }
   function esc(s){
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
-      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
   function toast(msg, kind){
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast ' + (kind || '');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2600);
+    t.textContent = msg; t.className = 'toast ' + (kind || '');
+    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600);
   }
 
-  /* ================= LOAD DATA ================= */
   async function loadRemote(){
-    const url = 'https://api.github.com/repos/' + GH.owner + '/' + GH.repo +
-                '/contents/' + GH.path + '?ref=' + GH.branch + '&t=' + Date.now();
-    const res = await fetch(url, {
-      headers: {
-        'Authorization': 'Bearer ' + GH.token,
-        'Accept': 'application/vnd.github+json'
-      }
-    });
+    const url = 'https://api.github.com/repos/' + GH.owner + '/' + GH.repo + '/contents/' + GH.path + '?ref=' + GH.branch + '&t=' + Date.now();
+    const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + GH.token, 'Accept': 'application/vnd.github+json' } });
     if (res.status === 404) return [];
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const file = await res.json();
-    try { return JSON.parse(b64Decode(file.content)); }
-    catch(e){ return []; }
+    try { return JSON.parse(b64Decode(file.content)); } catch(e){ return []; }
   }
 
-  function loadLocal(){
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
-    catch(e){ return []; }
-  }
+  function loadLocal(){ try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch(e){ return []; } }
 
   let currentData = [];
 
@@ -431,162 +192,92 @@
     try {
       if (USE_REMOTE){
         currentData = await loadRemote();
-        document.getElementById('sourceLabel').textContent =
-          '🌐 Đang đọc từ GitHub (' + GH.owner + '/' + GH.repo + ')';
+        document.getElementById('sourceLabel').textContent = '🌐 Đang đọc từ GitHub (' + GH.owner + '/' + GH.repo + ')';
       } else {
         currentData = loadLocal();
-        document.getElementById('sourceLabel').textContent =
-          '💾 Đang đọc từ localStorage (chưa cấu hình GitHub)';
+        document.getElementById('sourceLabel').textContent = '💾 Đang đọc từ localStorage (chưa cấu hình GitHub)';
       }
       render();
     } catch (e){
       console.warn(e);
       toast('⚠ Không đọc được GitHub, dùng local', 'err');
       currentData = loadLocal();
-      document.getElementById('sourceLabel').textContent =
-        '⚠ Fallback: localStorage';
+      document.getElementById('sourceLabel').textContent = '⚠ Fallback: localStorage';
       render();
     }
   }
 
-  /* ================= COUNT UP ================= */
   function countUp(el, target, suffix){
-    suffix = suffix || '';
-    const start = performance.now();
-    const dur = 900;
+    suffix = suffix || ''; const start = performance.now(); const dur = 900;
     function step(now){
-      const t = Math.min((now - start) / dur, 1);
-      const ease = 1 - Math.pow(1 - t, 3);
+      const t = Math.min((now - start) / dur, 1); const ease = 1 - Math.pow(1 - t, 3);
       el.textContent = Math.round(target * ease) + suffix;
       if (t < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
   }
 
-  /* ================= RENDER ================= */
   function render(){
     const data = currentData.slice();
     data.sort((a, b) => (b.lastVisit || 0) - (a.lastVisit || 0));
-
     const total = data.length;
     const completed = data.filter(r => r.completed).length;
     const rate = total ? Math.round(completed / total * 100) : 0;
 
-    // Stat cards
     countUp(document.getElementById('totalVisitors'), total);
     countUp(document.getElementById('totalCompleted'), completed);
     countUp(document.getElementById('completionRate'), rate, '%');
 
-    // Rings
-    const ring1 = document.getElementById('ring1');
-    const ring2 = document.getElementById('ring2');
+    const ring1 = document.getElementById('ring1'), ring2 = document.getElementById('ring2');
     ring1.style.strokeDashoffset = RING_LEN * (1 - rate / 100);
-    ring2.style.strokeDashoffset = RING_LEN * (total ? 1 - (completed / total) : 1);
-    // ring2 dùng cho "đã ghé thăm" — luôn 100% nếu có người, dùng làm minh hoạ
-    if (total > 0) {
-      ring2.style.strokeDashoffset = 0;
-    } else {
-      ring2.style.strokeDashoffset = RING_LEN;
-    }
-    document.getElementById('ring1Label').textContent =
-      rate + '% người xem đã đọc hết thiệp';
-    document.getElementById('ring2Label').textContent =
-      total + ' người đã mở thiệp';
+    if (total > 0) ring2.style.strokeDashoffset = 0; else ring2.style.strokeDashoffset = RING_LEN;
+    
+    document.getElementById('ring1Label').textContent = rate + '% người xem đã đọc hết thiệp';
+    document.getElementById('ring2Label').textContent = total + ' người đã mở thiệp';
 
-    // Table
-    const tbody = document.getElementById('tbody');
-    const empty = document.getElementById('emptyState');
-    const tableWrap = document.querySelector('.table-wrap');
-    const ringsBox = document.querySelector('.rings');
+    const tbody = document.getElementById('tbody'), empty = document.getElementById('emptyState'), tableWrap = document.querySelector('.table-wrap'), ringsBox = document.querySelector('.rings');
 
     if (!total){
-      tbody.innerHTML = '';
-      tableWrap.style.display = 'none';
-      ringsBox.style.display = 'none';
-      empty.style.display = 'block';
-      document.getElementById('lastUpdate').textContent =
-        new Date().toLocaleString('vi-VN');
+      tbody.innerHTML = ''; tableWrap.style.display = 'none'; ringsBox.style.display = 'none'; empty.style.display = 'block';
+      document.getElementById('lastUpdate').textContent = new Date().toLocaleString('vi-VN');
       document.getElementById('liveLabel').textContent = 'Chưa có dữ liệu';
       return;
     }
-    tableWrap.style.display = 'block';
-    ringsBox.style.display = 'grid';
-    empty.style.display = 'none';
+    tableWrap.style.display = 'block'; ringsBox.style.display = 'grid'; empty.style.display = 'none';
 
     tbody.innerHTML = data.map((r, i) => {
-      const dots = Array.from({ length: TOTAL_SLIDES }, (_, k) =>
-        '<span class="pdot ' + (k <= (r.maxSlide || 0) ? 'on' : '') + '"></span>'
-      ).join('');
-      const status = r.completed
-        ? '<span class="badge done">✓ Đã xem hết</span>'
-        : '<span class="badge pending">◌ Chưa xem hết</span>';
-
+      const dots = Array.from({ length: TOTAL_SLIDES }, (_, k) => '<span class="pdot ' + (k <= (r.maxSlide || 0) ? 'on' : '') + '"></span>').join('');
+      const status = r.completed ? '<span class="badge done">✓ Đã xem hết</span>' : '<span class="badge pending">◌ Chưa xem hết</span>';
       return '<tr>' +
-        '<td class="row-num">' + (i + 1) + '</td>' +
-        '<td>' + esc(r.hoDem) + '</td>' +
-        '<td><b>' + esc(r.ten) + '</b></td>' +
-        '<td>' + fmtDOB(r.ngaySinh) + '</td>' +
-        '<td>' + fmtDate(r.createdAt) + '</td>' +
-        '<td>' + fmtDate(r.lastVisit) + '</td>' +
-        '<td>' + (r.visitCount || 1) + '</td>' +
-        '<td><div class="progress">' + dots + '</div></td>' +
-        '<td>' + status + '</td>' +
-        '</tr>';
+        '<td class="row-num">' + (i + 1) + '</td><td>' + esc(r.hoDem) + '</td><td><b>' + esc(r.ten) + '</b></td><td>' + fmtDOB(r.ngaySinh) + '</td>' +
+        '<td>' + fmtDate(r.createdAt) + '</td><td>' + fmtDate(r.lastVisit) + '</td><td>' + (r.visitCount || 1) + '</td>' +
+        '<td><div class="progress">' + dots + '</div></td><td>' + status + '</td></tr>';
     }).join('');
 
-    document.getElementById('lastUpdate').textContent =
-      new Date().toLocaleString('vi-VN');
-    document.getElementById('liveLabel').textContent = USE_REMOTE
-      ? 'Live · GitHub'
-      : 'Local · localStorage';
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('vi-VN');
+    document.getElementById('liveLabel').textContent = USE_REMOTE ? 'Live · GitHub' : 'Local · localStorage';
   }
 
-  /* ================= EXPORT CSV ================= */
   function exportCSV(){
     if (!currentData.length){ toast('Chưa có dữ liệu để xuất', 'err'); return; }
     const header = ['Họ đệm','Tên','Ngày sinh','Lần đầu','Lần cuối','Số lần','Slide tối đa','Đã xem hết'];
-    const rows = currentData.map(r => [
-      r.hoDem || '',
-      r.ten || '',
-      fmtDOB(r.ngaySinh),
-      fmtDate(r.createdAt),
-      fmtDate(r.lastVisit),
-      r.visitCount || 1,
-      ((r.maxSlide || 0) + 1) + '/' + TOTAL_SLIDES,
-      r.completed ? 'Có' : 'Chưa'
-    ]);
-    const csv = [header].concat(rows).map(row =>
-      row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')
-    ).join('\n');
+    const rows = currentData.map(r => [ r.hoDem || '', r.ten || '', fmtDOB(r.ngaySinh), fmtDate(r.createdAt), fmtDate(r.lastVisit), r.visitCount || 1, ((r.maxSlide || 0) + 1) + '/' + TOTAL_SLIDES, r.completed ? 'Có' : 'Chưa' ]);
+    const csv = [header].concat(rows).map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'thong-ke-20-10.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a = document.createElement('a');
+    a.href = url; a.download = 'thong-ke-20-10.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     toast('✓ Đã xuất CSV', 'ok');
   }
 
-  /* ================= EVENTS ================= */
-  document.getElementById('refreshBtn').addEventListener('click', () => {
-    toast('⏳ Đang tải lại...');
-    refresh();
-  });
+  document.getElementById('refreshBtn').addEventListener('click', () => { toast('⏳ Đang tải lại...'); refresh(); });
   document.getElementById('exportBtn').addEventListener('click', exportCSV);
   document.getElementById('clearBtn').addEventListener('click', () => {
     if (!confirm('Xóa dữ liệu local trên trình duyệt này?\n(Không ảnh hưởng GitHub)')) return;
-    localStorage.removeItem(STORE_KEY);
-    toast('✓ Đã xóa local', 'ok');
+    localStorage.removeItem(STORE_KEY); toast('✓ Đã xóa local', 'ok');
     if (!USE_REMOTE) refresh();
   });
 
-  window.addEventListener('storage', e => {
-    if (e.key === STORE_KEY && !USE_REMOTE) refresh();
-  });
-
+  window.addEventListener('storage', e => { if (e.key === STORE_KEY && !USE_REMOTE) refresh(); });
   if (USE_REMOTE) setInterval(refresh, 30000);
   refresh();
 })();
